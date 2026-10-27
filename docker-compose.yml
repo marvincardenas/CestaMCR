@@ -1,0 +1,34 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: tarearef
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dwes
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql 
+    networks:
+      - backend
+
+  web:
+    build: . 
+    ports:
+      - "8080:80"
+    volumes:
+      - ./html:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_NAME: dwes
+      DB_USER: root
+      DB_PASS: root
+    depends_on:
+      - db
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  db_data:
